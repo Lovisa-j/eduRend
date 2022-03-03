@@ -46,6 +46,7 @@ bool InputHandler::ReadMouse(){
 	return true;
 }
 
+
 void InputHandler::ProcessInput(){
 	mouseX += mouseState.lX;
 	mouseY += mouseState.lY;

@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "Model.h"
 #include "Texture.h"
+#include "Cube.h";
 
 // New files
 // Material
@@ -55,6 +56,8 @@ class OurTestScene : public Scene
 
 	// CBuffer for transformation matrices
 	ID3D11Buffer* transformation_buffer = nullptr;
+	
+	ID3D11Buffer* lightcam_buffer = nullptr;
 	// + other CBuffers
 
 	// 
@@ -62,11 +65,19 @@ class OurTestScene : public Scene
 	// These must match the corresponding shader definitions 
 	//
 
+	
+
 	struct TransformationBuffer
 	{
 		mat4f ModelToWorldMatrix;
 		mat4f WorldToViewMatrix;
 		mat4f ProjectionMatrix;
+	};
+
+	struct LightCamBuffer
+	{
+		vec4f lightPos;
+		vec4f camPos;
 	};
 
 	//
@@ -76,10 +87,18 @@ class OurTestScene : public Scene
 
 	QuadModel* quad;
 	OBJModel* sponza;
+	Cube* cube;
+	Cube* cube2;
+	Cube* cube3;
 
 	// Model-to-world transformation matrices
 	mat4f Msponza;
 	mat4f Mquad;
+	mat4f Mcube;
+	mat4f Mcube2;
+	mat4f Mcube3;
+	mat4f cube2_m;
+	mat4f cube3_m;
 
 	// World-to-view matrix
 	mat4f Mview;
@@ -93,11 +112,17 @@ class OurTestScene : public Scene
 	float fps_cooldown = 0;
 
 	void InitTransformationBuffer();
+	void InitLightCamBuffer();
 
 	void UpdateTransformationBuffer(
 		mat4f ModelToWorldMatrix,
 		mat4f WorldToViewMatrix,
 		mat4f ProjectionMatrix);
+
+
+	void UpdateLightcambuffer(
+		);
+
 
 public:
 	OurTestScene(

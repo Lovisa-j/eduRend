@@ -106,7 +106,7 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 		{
 			SetViewport(g_InitialWinWidth, g_InitialWinHeight);
 
-			g_DeviceContext->OMSetRenderTargets( 1, &g_RenderTargetView, g_DepthStencilView );
+			g_DeviceContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
 
 			const D3D11_INPUT_ELEMENT_DESC inputDesc[5] = {
 					{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -116,12 +116,12 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 					{ "TEX", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			};
 
-			if (FAILED(create_shader(g_Device,  "shaders/vertex_shader.hlsl", "VS_main", SHADER_VERTEX, &inputDesc[0], 5, &g_VertexShader)) || 
+			if (FAILED(create_shader(g_Device, "shaders/vertex_shader.hlsl", "VS_main", SHADER_VERTEX, &inputDesc[0], 5, &g_VertexShader)) ||
 				FAILED(create_shader(g_Device, "shaders/pixel_shader.hlsl", "PS_main", SHADER_PIXEL, nullptr, 0, &g_PixelShader)))
 			{
 				__debugbreak();
 			}
-
+		
 			scene = std::make_unique<OurTestScene>(
 				g_Device,
 				g_DeviceContext,
@@ -295,6 +295,7 @@ void InitRasterizerState()
 {
 	D3D11_RASTERIZER_DESC rasterizerState;
 	rasterizerState.FillMode = D3D11_FILL_SOLID;
+	//rasterizerState.FillMode = D3D11_FILL_WIREFRAME;
 	rasterizerState.CullMode = D3D11_CULL_BACK;
 	rasterizerState.FrontCounterClockwise = true;
 	rasterizerState.DepthBias = false;

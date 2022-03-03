@@ -3,7 +3,7 @@
 //
 //  Oliver Öhrström
 //	CJ Gribel
-//
+
 
 #pragma once
 #ifndef TEXTURE_H

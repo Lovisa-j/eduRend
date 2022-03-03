@@ -170,6 +170,8 @@ OBJModel::OBJModel(
 				<< (SUCCEEDED(hr) ? " - OK" : "- FAILED") << std::endl;
 		}
 
+
+
 		// + other texture types here - see Material class
 		// ...
 	}
@@ -185,7 +187,7 @@ void OBJModel::Render() const
 	const UINT32 stride = sizeof(Vertex);
 	const UINT32 offset = 0;
 	dxdevice_context->IASetVertexBuffers(0, 1, &vertex_buffer, &stride, &offset);
-
+	dxdevice_context->PSSetConstantBuffers(1, 1, &phongShader_buffer);
 	// Bind index buffer
 	dxdevice_context->IASetIndexBuffer(index_buffer, DXGI_FORMAT_R32_UINT, 0);
 
@@ -195,14 +197,55 @@ void OBJModel::Render() const
 		// Fetch material
 		const Material& mtl = materials[irange.mtl_index];
 
+		vec4f kd = mtl.Kd.xyz1();
+		vec4f ks = mtl.Ks.xyz1();
+		vec4f ka = mtl.Ka.xyz1();
+		vec4f lightPos;
 		// Bind diffuse texture to slot t0 of the PS
 		dxdevice_context->PSSetShaderResources(0, 1, &mtl.diffuse_texture.texture_SRV);
 		// + bind other textures here, e.g. a normal map, to appropriate slots
+
+
+		D3D11_MAPPED_SUBRESOURCE resource;
+		dxdevice_context->Map(phongShader_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
+		PhongBuffer* matrix_buffer_ = (PhongBuffer*)resource.pData;
+		matrix_buffer_->ka = ka;
+		matrix_buffer_->ks = ks;
+		matrix_buffer_->kd = kd; 
+		dxdevice_context->Unmap(phongShader_buffer, 0);
 
 		// Make the drawcall
 		dxdevice_context->DrawIndexed(irange.size, irange.start, 0);
 	}
 }
+
+//void OBJModel::PhongRender(ID3D11Buffer& phongShader_buffer)
+//{
+//	// Bind vertex buffer
+//	const UINT32 stride = sizeof(Vertex);
+//	const UINT32 offset = 0;
+//	dxdevice_context->IASetVertexBuffers(0, 1, &vertex_buffer, &stride, &offset);
+//
+//	// Bind index buffer
+//	dxdevice_context->IASetIndexBuffer(index_buffer, DXGI_FORMAT_R32_UINT, 0);
+//
+//	// Iterate drawcalls
+//	for (auto& irange : index_ranges)
+//	{
+//		// Fetch material
+//		const Material& mtl = materials[irange.mtl_index];
+//;
+//		// Bind diffuse texture to slot t0 of the PS
+//		dxdevice_context->PSSetShaderResources(0, 1, &mtl.diffuse_texture.texture_SRV);
+//		// + bind other textures here, e.g. a normal map, to appropriate slots
+//
+//
+//
+//		// Make the drawcall
+//		dxdevice_context->DrawIndexed(irange.size, irange.start, 0);
+//	}
+//}
+
 
 OBJModel::~OBJModel()
 {
